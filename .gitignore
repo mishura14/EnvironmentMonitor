@@ -1,0 +1,20 @@
+# Build files
+build/
+.pio/
+*.o
+*.a
+*.elf
+*.bin
+*.hex
+*.map
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+.DS_Store
+Thumbs.db
+
+# Private credentials
+secrets.h
+credentials.h

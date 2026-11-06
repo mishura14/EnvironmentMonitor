@@ -12,10 +12,10 @@ constexpr uint16_t COLOR_CARD  = rgb565(21, 26, 34);     // карточки
 constexpr uint16_t COLOR_TEXT  = rgb565(232, 236, 241);  // основной текст
 constexpr uint16_t COLOR_MUTED = rgb565(138, 148, 163);  // подписи
 
-constexpr uint16_t COLOR_TEMP     = rgb565(251, 146, 60);
-constexpr uint16_t COLOR_HUM      = rgb565(56, 189, 248);
-constexpr uint16_t COLOR_CO2      = rgb565(167, 139, 250);
-constexpr uint16_t COLOR_PRESSURE = rgb565(74, 222, 128);
-constexpr uint16_t COLOR_LIGHT    = rgb565(250, 204, 21);
+constexpr uint16_t COLOR_TEMP     = rgb565(251, 146, 60);// температура
+constexpr uint16_t COLOR_HUM      = rgb565(56, 189, 248);// влажность
+constexpr uint16_t COLOR_CO2      = rgb565(167, 139, 250);// углекислый газ
+constexpr uint16_t COLOR_PRESSURE = rgb565(74, 222, 128);// давление
+constexpr uint16_t COLOR_LIGHT    = rgb565(250, 204, 21);// свет
 
 #endif

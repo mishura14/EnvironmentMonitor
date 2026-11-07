@@ -29,7 +29,6 @@ void drawLightCardMain(
     const char* indicator,// значение датчка
     uint16_t color_text,// цвет значения датчика
     const char* meaning,// в чем измеряется
-    const char* change,// изменение данных
     int max_lux // максимальное количество lux
 );
 

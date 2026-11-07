@@ -1,10 +1,22 @@
 #include "MainScreen.h"
-#include "../../Components/Card/Card.h""
+#include "../../Components/Card/Card.h"
 #include "../../Theme.h"
 #include "../../Layout.h"
-#include "../../Components/Text/Text.h""
+#include "../../Components/Text/Text.h"
+#include <RTClib.h>
+#include "../../Components/Clock/Clock.h""
+#include "../../Components/Date/Date.h""
 
 
+
+//обновляемые часы на главной панели
+static ClockView headerClock = {85, 10, 2, COLOR_TEXT, COLOR_BG, TL_DATUM, -1};
+
+//обновляемая дата
+static DateView headerDate = {125,16,1,COLOR_MUTED,COLOR_BG,TL_DATUM,-1};
+
+//обновляемые часы в карте датчика света
+static ClockView lightClock = {225, 115, 1, COLOR_MUTED, COLOR_CARD, TL_DATUM, -1};
 
 void drawMainScreen(TFT_eSPI& tft){
     tft.fillScreen(COLOR_BG);
@@ -12,11 +24,6 @@ void drawMainScreen(TFT_eSPI& tft){
     // главная надпись сверху слева
     drawText(tft,"CLIMATE",8,10,2,COLOR_TEXT,COLOR_BG);
 
-    // время в главной панели
-    drawText(tft,"14.32",75,10,2,COLOR_TEXT,COLOR_BG);
-
-    // число и месяц на верхней панели
-    drawText(tft,"THU 5 NOV",120,16,1,COLOR_MUTED,COLOR_BG);
 
     //датчик температуры
     drawCardMain(
@@ -82,8 +89,13 @@ void drawMainScreen(TFT_eSPI& tft){
       "420",//значение датчика
       COLOR_LIGHT,// цвет значения датчика
       "lux",// в чем измеряется
-      "AT 14.32",// время
       820
 
     );
+}
+//обновление главного экрана
+void updateMainScreen(TFT_eSPI& tft, const DateTime& now){
+    updateClock(tft,headerClock,now);
+    updateClock(tft,lightClock,now);
+    updateDate(tft,headerDate,now);
 }

@@ -5,6 +5,6 @@
 #include <RTClib.h>
 
 void drawMainScreen(TFT_eSPI& tft);                          // нарисовать страницу целиком
-void updateMainScreen(TFT_eSPI& tft, const DateTime& now);   // обновить то, что меняется
+void updateMainScreen(TFT_eSPI& tft, const DateTime& now, float current_lux);  // обновить то, что меняется
 
 #endif

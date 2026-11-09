@@ -43,8 +43,6 @@ void drawLightCardMain(
     int height,// высота карты
     uint16_t color,// цвет карты
     const char* text,// надпись над картой
-    const char* indicator,// значение данчика
-    uint16_t color_text,// текс цвета значения датчика
     const char* meaning,// в чем измеряется значение
     int max_lux // максимальное значение люксов
 
@@ -58,7 +56,6 @@ void drawLightCardMain(
         color
     );
     drawText(tft,text,x+10,y+10,1,COLOR_MUTED,COLOR_CARD);
-    drawText(tft,indicator,x+10,y+30,4,color_text,COLOR_CARD);
     drawText(tft,meaning,x+10,y+55,1,COLOR_MUTED,COLOR_CARD);
     drawText(tft,"TODAY",x+10,y+95,1,COLOR_MUTED,COLOR_CARD);
     char line[20];

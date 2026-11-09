@@ -9,7 +9,7 @@ static const char* MONTHS[] = {"JAN","FEB","MAR","APR","MAY","JUN",
 
 //рисуем дату
 void drawDate(TFT_eSPI& tft, DateView& view, const DateTime& time){
-    char buf[16];
+    char buf[20];
     int weekday = time.dayOfTheWeek();
     snprintf(buf, sizeof(buf), "%s %d %0s",DAYS[weekday],time.day(),MONTHS[time.month() -1] );
     //стили надписи

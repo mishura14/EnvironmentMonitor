@@ -5,6 +5,7 @@
 #include "src/Sensors/RTC/RTC.h"
 #include "src/UI/Components/Clock/Clock.h"
 #include <Wire.h>
+#include "src/Sensors/Light/Light.h"
 
 
 TFT_eSPI tft = TFT_eSPI();
@@ -22,14 +23,33 @@ void setup() {
     tft.setRotation(1);
     drawMainScreen(tft);
 
+    // Инициализируем RTC
     rtcOk = rtcBegin();
-    if(!rtcOk) Serial.println("RTC not found");
+    if (!rtcOk) {
+        Serial.println("RTC not found");
+    }
+
+    // Инициализируем BH1750
+    if (!lightBegin()) {
+           Serial.println("BH1750 not found");
+    } else {
+        Serial.println("BH1750 initialized");
+    }
 
 }
 
 void loop() {
-    if(rtcOk && millis() - lastClockTick >= 1000){
+    static float currentLux = 0.0f;
+
+    // Получаем освещённость
+    lightRead(currentLux);
+
+    // Обновляем часы раз в секунду
+    if (rtcOk && millis() - lastClockTick >= 1000) {
         lastClockTick = millis();
-        updateMainScreen(tft, rtcGetTime());
+
+        DateTime now = rtcGetTime();
+
+        updateMainScreen(tft, now, currentLux);
     }
 }

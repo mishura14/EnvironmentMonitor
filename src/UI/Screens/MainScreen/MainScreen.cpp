@@ -6,9 +6,15 @@
 #include <RTClib.h>
 #include "../../Components/Clock/Clock.h"
 #include "../../Components/Date/Date.h"
-#include "../../Components/Light/Light.h""
+#include "../../Components/Light/Light.h"
+#include "../../../Sensors/SensorData.h"
+//кординаты надписи максимальной освещенности
+static const int LIGHT_X = GAP + CARD_W + GAP + GAP + CARD_W;   // левый край карточки LIGHT
+static const int LIGHT_Y = 40;
 
-
+static float luxPeak = 0;     // максимум освещённости за сегодня
+static int shownPeak = -1;    // что сейчас нарисовано
+static int peakDay = -1;      // день, для которого считаем максимум
 
 //обновляемые часы на главной панели
 static ClockView headerClock = {85, 10, 2, COLOR_TEXT, COLOR_BG, TL_DATUM, -1};
@@ -75,7 +81,7 @@ void drawMainScreen(TFT_eSPI& tft){
       GAP+CARD_W+GAP,135,//положение
       CARD_W, CARD_HIGHT,//размер
       COLOR_CARD,// цвет карты
-      "PREESSURE",// мелкая надпись карты
+      "PRESSURE",// мелкая надпись карты
       "1013",//значение датчика
       COLOR_PRESSURE,// цвет значения датчика
       "hPa",// в чем измеряется
@@ -94,11 +100,26 @@ void drawMainScreen(TFT_eSPI& tft){
       820
 
     );
+    resetClock(headerClock);
+    resetClock(lightClock);
+    resetDate(headerDate);
+    resetLight(lightState);
+    shownPeak = (int)luxPeak;
 }
 //обновление главного экрана
-void updateMainScreen(TFT_eSPI& tft, const DateTime& now,float current_lux){
-    updateClock(tft,headerClock,now);
-    updateClock(tft,lightClock,now);
-    updateDate(tft,headerDate,now);
-    updateLight(tft,lightState,current_lux);
+void updateMainScreen(TFT_eSPI& tft, const DateTime& now, const SensorData& d){
+    updateClock(tft, headerClock, now);
+    updateClock(tft, lightClock, now);
+    updateDate(tft, headerDate, now);
+    updateLight(tft, lightState, d.lux);
+
+    // новый день: максимум считаем заново
+    if (now.day() != peakDay) { peakDay = now.day(); luxPeak = 0; }
+    if (!isnan(d.lux) && d.lux > luxPeak) luxPeak = d.lux;
+
+    int peak = (int)luxPeak;
+    if (peak != shownPeak) {
+        drawLightPeak(tft, LIGHT_X + 10, LIGHT_Y + 165, peak, COLOR_MUTED, COLOR_CARD);
+        shownPeak = peak;
+    }
 }

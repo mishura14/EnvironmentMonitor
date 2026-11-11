@@ -6,50 +6,45 @@
 #include "src/UI/Components/Clock/Clock.h"
 #include <Wire.h>
 #include "src/Sensors/Light/Light.h"
+#include "src/Sensors/Sensors.h"
 
 
 TFT_eSPI tft = TFT_eSPI();
 
 bool rtcOk = false;
-unsigned long lastClockTick = 0;
+SensorData sensorData;
+unsigned long lastSensorTick = 0;
+unsigned long lastUiTick = 0;;
 
 
 void setup() {
     Serial.begin(115200);
     Wire.begin(27, 22);
+    sensorsBegin();
 
     tft.init();
     tft.invertDisplay(true);
     tft.setRotation(1);
     drawMainScreen(tft);
 
-    // Инициализируем RTC
     rtcOk = rtcBegin();
-    if (!rtcOk) {
-        Serial.println("RTC not found");
-    }
+        if (!rtcOk) Serial.println("RTC not found");
 
-    // Инициализируем BH1750
-    if (!lightBegin()) {
-           Serial.println("BH1750 not found");
-    } else {
-        Serial.println("BH1750 initialized");
-    }
-
+    sensorsBegin();   // подключает BH1750 и SHT3x, статус пишет в Seria
 }
 
 void loop() {
-    static float currentLux = 0.0f;
+    // датчики раз в секунду
+    if (millis() - lastSensorTick >= 1000) {
+        lastSensorTick = millis();
+        sensorsUpdate(sensorData);
+        Serial.printf("lux=%.0f\n", sensorData.lux);
+    }
 
-    // Получаем освещённость
-    lightRead(currentLux);
-
-    // Обновляем часы раз в секунду
-    if (rtcOk && millis() - lastClockTick >= 1000) {
-        lastClockTick = millis();
-
-        DateTime now = rtcGetTime();
-
-        updateMainScreen(tft, now, currentLux);
+    // экран дважды в секунду; сами компоненты решают, нужна ли перерисовка
+    if (millis() - lastUiTick >= 500) {
+        lastUiTick = millis();
+        DateTime now = rtcOk ? rtcGetTime() : DateTime();   // без RTC часы покажут 00:00, свет работает
+        updateMainScreen(tft, now, sensorData);
     }
 }

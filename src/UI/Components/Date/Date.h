@@ -1,3 +1,4 @@
+#pragma once
 #include <TFT_eSPI.h>
 #include <RTClib.h>
 #include <cstdint>

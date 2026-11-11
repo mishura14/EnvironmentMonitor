@@ -7,19 +7,19 @@
 static const int NO_DATA = -2;
 //превращаем занчение в токен
 static int toKey(float lux){
-    return isnan(lux)? NO_DATA : (int)roundf(lux);
+    return isnan(lux)? NO_DATA : (int)roundf(lux*10);
 }
 // Отрисовка освещённости
 void drawLight(TFT_eSPI& tft, LightView& view, float lux) {
 
     char buf[12];
     if (isnan(lux)) snprintf(buf, sizeof(buf), "--");
-    else            snprintf(buf, sizeof(buf), "%d", (int)lroundf(lux));
+    else            snprintf(buf, sizeof(buf), "%.1f", lux);
 
     // Стили надписи
     tft.setTextColor(view.color, view.bg);
     tft.setTextDatum(view.datum);
-    tft.setTextPadding(tft.textWidth("00000", view.font));
+    tft.setTextPadding(tft.textWidth("0000.0", view.font));
     tft.drawString(buf, view.x, view.y, view.font);
     tft.setTextPadding(0);
 

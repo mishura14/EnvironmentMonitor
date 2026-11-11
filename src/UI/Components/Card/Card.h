@@ -14,8 +14,6 @@ void drawCardMain(
     int height,// высота
     uint16_t color,// цвет карты
     const char* text,// надпись сверху
-    const char* indicator,// значение датчка
-    uint16_t color_text,// цвет значения датчика
     const char* meaning,// в чем измеряется
     const char* change// изменение данных
 );

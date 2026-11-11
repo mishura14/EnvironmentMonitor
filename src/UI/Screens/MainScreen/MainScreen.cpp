@@ -8,6 +8,7 @@
 #include "../../Components/Date/Date.h"
 #include "../../Components/Light/Light.h"
 #include "../../../Sensors/SensorData.h"
+#include "../../Components/Temp/Temp.h""
 //кординаты надписи максимальной освещенности
 static const int LIGHT_X = GAP + CARD_W + GAP + GAP + CARD_W;   // левый край карточки LIGHT
 static const int LIGHT_Y = 40;
@@ -28,6 +29,9 @@ static ClockView lightClock = {225, 115, 1, COLOR_MUTED, COLOR_CARD, TL_DATUM, -
 //показатель датчика освещенности
 static LightView lightState = {225, 68, 4, COLOR_LIGHT, COLOR_CARD, TL_DATUM, -1};
 
+//показатель датчика температуры
+static TempView TempState = {15, 68, 4, COLOR_TEMP, COLOR_CARD, TL_DATUM, -1};
+
 void drawMainScreen(TFT_eSPI& tft){
     tft.fillScreen(COLOR_BG);
 
@@ -42,8 +46,6 @@ void drawMainScreen(TFT_eSPI& tft){
         CARD_W,CARD_HIGHT,// размер
         COLOR_CARD,// цвет карты
         "TEMP",// мелкая надпись карты
-        "23.4",// значение датчика
-        COLOR_TEMP,// цвет значения датчика
         "C",// в чем измерятеся
         "+_"// изменения за час
     );
@@ -55,8 +57,6 @@ void drawMainScreen(TFT_eSPI& tft){
       CARD_W, CARD_HIGHT,//размер
       COLOR_CARD,// цвет карты
       "CO2",// мелкая надпись карты
-      "900",//значение датчика
-      COLOR_CO2,//цвет значения датчика
       "ppm",// в чем измеряется
       "+_"// изменения за час
 
@@ -69,8 +69,6 @@ void drawMainScreen(TFT_eSPI& tft){
         CARD_W,CARD_HIGHT,// размер
         COLOR_CARD,// цвет карты
         "HUM",// мелкая надпись карты
-        "46",// значение датчика
-        COLOR_HUM,// цвет значения датчика
         "%",// в чем измеряется
         "+_"// изменения за час
     );
@@ -82,8 +80,6 @@ void drawMainScreen(TFT_eSPI& tft){
       CARD_W, CARD_HIGHT,//размер
       COLOR_CARD,// цвет карты
       "PRESSURE",// мелкая надпись карты
-      "1013",//значение датчика
-      COLOR_PRESSURE,// цвет значения датчика
       "hPa",// в чем измеряется
       "+_"// изменения за час
 
@@ -104,6 +100,7 @@ void drawMainScreen(TFT_eSPI& tft){
     resetClock(lightClock);
     resetDate(headerDate);
     resetLight(lightState);
+    resetTemp(TempState);
     shownPeak = (int)luxPeak;
 }
 //обновление главного экрана
@@ -112,6 +109,7 @@ void updateMainScreen(TFT_eSPI& tft, const DateTime& now, const SensorData& d){
     updateClock(tft, lightClock, now);
     updateDate(tft, headerDate, now);
     updateLight(tft, lightState, d.lux);
+    updateTemp(tft,TempState, d.shtTemp);
 
     // новый день: максимум считаем заново
     if (now.day() != peakDay) { peakDay = now.day(); luxPeak = 0; }

@@ -31,6 +31,7 @@ void setup() {
         if (!rtcOk) Serial.println("RTC not found");
 
     sensorsBegin();   // подключает BH1750 и SHT3x, статус пишет в Seria
+
 }
 
 void loop() {
@@ -38,7 +39,7 @@ void loop() {
     if (millis() - lastSensorTick >= 1000) {
         lastSensorTick = millis();
         sensorsUpdate(sensorData);
-        Serial.printf("lux=%.0f\n temp=%.0f\n hum=%.0f\n ", sensorData.lux, sensorData.shtTemp, sensorData.shtHum);
+        Serial.printf(" lux=%.0f\n temp=%.0f\n hum=%.0f\n co2=%.0f", sensorData.lux, sensorData.shtTemp, sensorData.shtHum, sensorData.co2);
     }
 
     // экран дважды в секунду; сами компоненты решают, нужна ли перерисовка

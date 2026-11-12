@@ -1,19 +1,22 @@
 #include "Sensors.h"
 #include <Arduino.h>
 #include "Light/Light.h"
+#include "Scd41/Scd41.h"
 #include "Sht3x/Sht3x.h"
 
 
-static bool lightOk, shtOk;
+static bool lightOk, shtOk, scd41Ok;
 
 //подключение всех датчиков
 void sensorsBegin(){
     lightOk = lightBegin();
     shtOk = sht3xBegin();
+    scd41Ok = scd41Begin();
 
 
     Serial.printf("BH1750: %s\n", lightOk ? "OK" : "FAIL");
     Serial.printf("SHT3x:  %s\n", shtOk   ? "OK" : "FAIL");
+    Serial.printf("SCD41:  %s\n", scd41Ok   ? "OK" : "FAIL");
 }
 
 //обновление датчиков
@@ -22,4 +25,5 @@ void sensorsUpdate(SensorData& d){
         if (!lightRead(d.lux)) d.lux = NAN;   // ошибка чтения = "нет данных"
     }
     if (shtOk) sht3xRead(d.shtTemp, d.shtHum);
+    if (scd41Ok) scd41Read(d.co2, d.scdTemp, d.scdHum);
 }

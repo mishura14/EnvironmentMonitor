@@ -11,6 +11,7 @@
 #include "../../Components/Temp/Temp.h"
 #include "../../Components/Hum/Hum.h"
 #include "../../Components/CO2/CO2.h"
+#include "../../Components/hPa/hPa.h"
 //кординаты надписи максимальной освещенности
 static const int LIGHT_X = GAP + CARD_W + GAP + GAP + CARD_W;   // левый край карточки LIGHT
 static const int LIGHT_Y = 40;
@@ -38,7 +39,10 @@ static TempView TempState = {15, 68, 4, COLOR_TEMP, COLOR_CARD, TL_DATUM, -1};
 static HumView HumState = {120, 68, 4, COLOR_HUM, COLOR_CARD, TL_DATUM, -1};
 
 //показатель СO2
-static CO2View CO2State = {15, 158, 4, COLOR_CO2, COLOR_CARD, TL_DATUM, -1};
+static CO2View CO2State = {15, 68+95, 4, COLOR_CO2, COLOR_CARD, TL_DATUM, -1};
+
+//показатель hpa
+static hPaView hPaState = {120, 68+95, 4, COLOR_PRESSURE, COLOR_CARD, TL_DATUM, -1};
 
 void drawMainScreen(TFT_eSPI& tft){
     tft.fillScreen(COLOR_BG);
@@ -110,6 +114,7 @@ void drawMainScreen(TFT_eSPI& tft){
     resetLight(lightState);
     resetTemp(TempState);
     resetCO2(CO2State);
+    resethPa(hPaState);
     shownPeak = (int)luxPeak;
 }
 //обновление главного экрана
@@ -118,9 +123,10 @@ void updateMainScreen(TFT_eSPI& tft, const DateTime& now, const SensorData& d){
     updateClock(tft, lightClock, now);
     updateDate(tft, headerDate, now);
     updateLight(tft, lightState, d.lux);
-    updateTemp(tft,TempState, d.shtTemp);
-    updateHum(tft,HumState,d.shtHum);
+    updateTemp(tft,TempState, (d.shtTemp + d.bmpTemp) / 2);
+    updateHum(tft,HumState,(d.shtHum + d.scdHum) / 2);
     updateCO2(tft,CO2State,d.co2);
+    updatehPa(tft, hPaState,d.pressure);
 
     // новый день: максимум считаем заново
     if (now.day() != peakDay) { peakDay = now.day(); luxPeak = 0; }

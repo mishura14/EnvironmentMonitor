@@ -1,17 +1,20 @@
 #include "Sensors.h"
 #include <Arduino.h>
+#include "BMP280/Bmp280.h"
 #include "Light/Light.h"
 #include "Scd41/Scd41.h"
 #include "Sht3x/Sht3x.h"
+#include "BMP280/BMP280.h""
 
 
-static bool lightOk, shtOk, scd41Ok;
+static bool lightOk, shtOk, scd41Ok, bmp280Ok;
 
 //подключение всех датчиков
 void sensorsBegin(){
     lightOk = lightBegin();
     shtOk = sht3xBegin();
     scd41Ok = scd41Begin();
+    bmp280Ok = bmp280Begin();
 
 
     Serial.printf("BH1750: %s\n", lightOk ? "OK" : "FAIL");
@@ -26,4 +29,5 @@ void sensorsUpdate(SensorData& d){
     }
     if (shtOk) sht3xRead(d.shtTemp, d.shtHum);
     if (scd41Ok) scd41Read(d.co2, d.scdTemp, d.scdHum);
+    if (bmp280Ok) bmp280Read(d.bmpTemp, d.pressure);
 }

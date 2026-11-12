@@ -38,7 +38,7 @@ void loop() {
     if (millis() - lastSensorTick >= 1000) {
         lastSensorTick = millis();
         sensorsUpdate(sensorData);
-        Serial.printf("lux=%.0f\n", sensorData.lux);
+        Serial.printf("lux=%.0f\n temp=%.0f\n hum=%.0f\n ", sensorData.lux, sensorData.shtTemp, sensorData.shtHum);
     }
 
     // экран дважды в секунду; сами компоненты решают, нужна ли перерисовка

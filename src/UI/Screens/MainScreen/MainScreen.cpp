@@ -8,7 +8,8 @@
 #include "../../Components/Date/Date.h"
 #include "../../Components/Light/Light.h"
 #include "../../../Sensors/SensorData.h"
-#include "../../Components/Temp/Temp.h""
+#include "../../Components/Temp/Temp.h"
+#include "../../Components/Hum/Hum.h"
 //кординаты надписи максимальной освещенности
 static const int LIGHT_X = GAP + CARD_W + GAP + GAP + CARD_W;   // левый край карточки LIGHT
 static const int LIGHT_Y = 40;
@@ -31,6 +32,9 @@ static LightView lightState = {225, 68, 4, COLOR_LIGHT, COLOR_CARD, TL_DATUM, -1
 
 //показатель датчика температуры
 static TempView TempState = {15, 68, 4, COLOR_TEMP, COLOR_CARD, TL_DATUM, -1};
+
+//показатель влажности
+static HumView HumState = {120, 68, 4, COLOR_HUM, COLOR_CARD, TL_DATUM, -1};
 
 void drawMainScreen(TFT_eSPI& tft){
     tft.fillScreen(COLOR_BG);
@@ -110,6 +114,7 @@ void updateMainScreen(TFT_eSPI& tft, const DateTime& now, const SensorData& d){
     updateDate(tft, headerDate, now);
     updateLight(tft, lightState, d.lux);
     updateTemp(tft,TempState, d.shtTemp);
+    updateHum(tft,HumState,d.shtHum);
 
     // новый день: максимум считаем заново
     if (now.day() != peakDay) { peakDay = now.day(); luxPeak = 0; }
